@@ -37,7 +37,7 @@ public class InvoiceAccounting {
         ExpenseInfo expenseInfo = new ExpenseInfo();
 
         if(costValue <= 0) {
-            //TODO: implemtnacj gdy ktos nie poda costValue
+            //TODO: implemtnacja gdy ktos nie poda costValue
             return new ExpenseInfo();
         } else {
             List<Expense> listCostValue = actualList.stream()
@@ -52,11 +52,7 @@ public class InvoiceAccounting {
 
             return expenseInfo;
         }
-//        Double sum = actualList.stream()
-//                .map(e -> e.getCostValue())
-//                .reduce(0.0, Double::sum);
-//        expenseInfo.setList(actualList);
-//        expenseInfo.setSumOfExpenses(sum);
+
     }
     @GetMapping("/expensesByConstructionSiteNo")
     public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false, defaultValue = "Wieliczka") String requestConstruction){
@@ -69,26 +65,50 @@ public class InvoiceAccounting {
         ExpenseInfo expenseInfo = new ExpenseInfo();
 
         if(requestConstruction.equals("Wieliczka")) {
-            //TODO: implemtnacj gdy ktos nie poda nazyw budowy
+//            TODO: implemtnacj gdy ktos nie poda nazyw budowy
             return new ExpenseInfo();
         } else {
             List<Expense> collectConstructionList = actualList.stream()
                     .filter(e -> e.getConstructionSiteNo().getConstruction().equals(requestConstruction))
                     .collect((Collectors.toList()));
 
-//            collectConstructionList.stream()
-//                    .reduce(0, Integer::sum);
-//
-//            expenseInfo.setList(listCostValue);
-//            expenseInfo.setSumOfExpenses(sum);
-//
+            Integer sum = collectConstructionList.stream()
+                    .map(Expense::getCostValue)
+                    .reduce(0, Integer::sum);
+
+            expenseInfo.setList(collectConstructionList);
+            expenseInfo.setSumOfExpenses(sum);
+
             return expenseInfo;
         }
-//        Double sum = actualList.stream()
-//                .map(e -> e.getCostValue())
-//                .reduce(0.0, Double::sum);
-//        expenseInfo.setList(actualList);
-//        expenseInfo.setSumOfExpenses(sum);
+    }
+    @GetMapping("/expensesByPaidCost")
+    public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false) Boolean requestPaidCost){
+        Iterable<Expense> all = accountingManager.findAll();
+
+        List<Expense> actualList = StreamSupport
+                .stream(all.spliterator(), false)
+                .collect(Collectors.toList());
+
+        ExpenseInfo expenseInfo = new ExpenseInfo();
+
+        if(requestPaidCost.equals(false)) {
+//            TODO: implemtnacj gdy ktos nie poda nazyw budowy
+            return new ExpenseInfo();
+        } else {
+            List<Expense> collectConstructionList = actualList.stream()
+                    .filter(e -> e.isPaidCost() == requestPaidCost)
+                    .collect(Collectors.toList());
+
+            Integer sum = collectConstructionList.stream()
+                    .map(Expense::getCostValue)
+                    .reduce(0, Integer::sum);
+
+            expenseInfo.setList(collectConstructionList);
+            expenseInfo.setSumOfExpenses(sum);
+
+            return expenseInfo;
+        }
     }
 
 

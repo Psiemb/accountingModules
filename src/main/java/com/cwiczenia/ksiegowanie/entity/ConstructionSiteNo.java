@@ -1,6 +1,17 @@
 package com.cwiczenia.ksiegowanie.entity;
 
-public enum ConstructionSiteNo {
-    BANDTKIEGO, WIELICZKA, PIJALNIA
+public class ConstructionSiteNo {
+    private String construction;
 
+//    BANDTKIEGO, WIELICZKA
+//    , PIJALNIA
+
+
+    public String getConstruction() {
+        return construction;
+    }
+
+    public void setConstruction(String construction) {
+        this.construction = construction;
+    }
 }

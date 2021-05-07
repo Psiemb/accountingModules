@@ -14,7 +14,7 @@ public class Expense {
     @Id
     private Long id;
     private Date actualData = new Date();
-    private double costValue;
+    private int costValue;
     private ConstructionSiteNo constructionSiteNo;
     private CostNoForConstructionSiteNo costNoForConstructionSiteNo;
     private boolean paidCost;
@@ -27,7 +27,7 @@ public class Expense {
         this.paidCost = paidCost;
     }
 
-    public Expense(Long id, double costValue, ConstructionSiteNo constructionSiteNo, CostNoForConstructionSiteNo costNoForConstructionSiteNo, boolean paidCost) {
+    public Expense(Long id, int costValue, ConstructionSiteNo constructionSiteNo, CostNoForConstructionSiteNo costNoForConstructionSiteNo, boolean paidCost) {
         this.id = id;
         this.costValue = costValue;
         this.constructionSiteNo = constructionSiteNo;
@@ -51,11 +51,11 @@ public class Expense {
         this.actualData = actualData;
     }
 
-    public double getCostValue() {
+    public int getCostValue() {
         return costValue;
     }
 
-    public void setCostValue(double costValue) {
+    public void setCostValue(int costValue) {
         this.costValue = costValue;
     }
 

@@ -41,7 +41,7 @@ public class AccountingManager {
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB(){
-        save(new Expense(1L, 3400, ConstructionSiteNo.BANDTKIEGO,CostNoForConstructionSiteNo.TRANSPORT_OBCY, false));
+//        save(new Expense(1L, 3400, "Wieliczka","Transport obcy", false));
     }
 
 }

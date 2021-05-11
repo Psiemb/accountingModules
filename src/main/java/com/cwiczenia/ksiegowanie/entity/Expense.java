@@ -1,17 +1,14 @@
 package com.cwiczenia.ksiegowanie.entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+//@Entity
 public class Expense {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
     private Long id;
     private Date actualData = new Date();
     private int costValue;
@@ -59,6 +56,7 @@ public class Expense {
         this.costValue = costValue;
     }
 
+
     public ConstructionSiteNo getConstructionSiteNo() {
         return constructionSiteNo;
     }
@@ -66,6 +64,7 @@ public class Expense {
     public void setConstructionSiteNo(ConstructionSiteNo constructionSiteNo) {
         this.constructionSiteNo = constructionSiteNo;
     }
+
 
     public CostNoForConstructionSiteNo getCostNoForConstructionSiteNo() {
         return costNoForConstructionSiteNo;

@@ -179,7 +179,8 @@ public class InvoiceAccounting {
 
 
     @PostMapping("/addExpense")
-    public Expense addExpense(@RequestBody Expense expense) {
+    public boolean addExpense(@RequestBody Expense expense) {
+//        return accountingManager.save(expense);
         return accountingManager.save(expense);
     }
 

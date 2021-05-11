@@ -4,6 +4,6 @@ import com.cwiczenia.ksiegowanie.entity.Expense;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AccoutingRepo extends CrudRepository<Expense, Long> {
-}
+//@Repository
+//public interface AccoutingRepo extends CrudRepository<Expense, Long> {
+//}

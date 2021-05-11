@@ -6,7 +6,11 @@ package com.cwiczenia.ksiegowanie.entity;
 public class ConstructionSiteNo {
     private String construction;
 
-//    BANDTKIEGO, WIELICZKA
+    public ConstructionSiteNo(String construction) {
+        this.construction = construction;
+    }
+
+    //    BANDTKIEGO, WIELICZKA
 //    , PIJALNIA
 
 

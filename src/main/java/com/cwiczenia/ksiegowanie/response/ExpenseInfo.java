@@ -9,7 +9,7 @@ public class ExpenseInfo {
 //    private List<ExpenseWEWNETRZNY_MODEL> list;
 //    private List<JakisObiektDlaKlienta> list;
     private List<ExpenseResponse> expenseResponses;
-    private double sumOfExpenses;
+    private int sumOfExpenses;
 
 //    public List<ExpenseWEWNETRZNY_MODEL> getList() {
 //        return list;
@@ -32,7 +32,7 @@ public class ExpenseInfo {
         return sumOfExpenses;
     }
 
-    public void setSumOfExpenses(double sumOfExpenses) {
+    public void setSumOfExpenses(int sumOfExpenses) {
         this.sumOfExpenses = sumOfExpenses;
     }
 }

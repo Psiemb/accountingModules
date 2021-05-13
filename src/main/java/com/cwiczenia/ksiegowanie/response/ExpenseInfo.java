@@ -1,20 +1,31 @@
 package com.cwiczenia.ksiegowanie.response;
 
-import com.cwiczenia.ksiegowanie.entity.Expense;
+import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
 
 import java.util.List;
 
 public class ExpenseInfo {
 
-    private List<Expense> list;
+//    private List<ExpenseWEWNETRZNY_MODEL> list;
+//    private List<JakisObiektDlaKlienta> list;
+    private List<ExpenseResponse> expenseResponses;
     private double sumOfExpenses;
 
-    public List<Expense> getList() {
-        return list;
+//    public List<ExpenseWEWNETRZNY_MODEL> getList() {
+//        return list;
+//    }
+//
+//    public void setList(List<ExpenseWEWNETRZNY_MODEL> list) {
+//        this.list = list;
+//    }
+
+
+    public List<ExpenseResponse> getExpenseResponses() {
+        return expenseResponses;
     }
 
-    public void setList(List<Expense> list) {
-        this.list = list;
+    public void setExpenseResponses(List<ExpenseResponse> expenseResponses) {
+        this.expenseResponses = expenseResponses;
     }
 
     public double getSumOfExpenses() {

@@ -1,8 +1,8 @@
 package com.cwiczenia.ksiegowanie.controller;
 
 import com.cwiczenia.ksiegowanie.dao.AccountingManager;
-import com.cwiczenia.ksiegowanie.entity.Expense;
-import com.cwiczenia.ksiegowanie.response.ExpenseInfo;
+import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
+import com.cwiczenia.ksiegowanie.util.ExpenseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,65 +15,91 @@ import java.util.stream.StreamSupport;
 @RestController
 public class InvoiceAccounting {
 
-    private AccountingManager accountingManager;
+    private final ExpenseHelper expenseHelper;
+    private final AccountingManager accountingManager;
 
     @Autowired
-    public InvoiceAccounting(AccountingManager accountingManager) {
+    public InvoiceAccounting(AccountingManager accountingManager, ExpenseHelper expenseHelper) {
+        this.expenseHelper = expenseHelper;
         this.accountingManager = accountingManager;
     }
 
-    private List<Expense> expenseList = new ArrayList<>();
+    private List<ExpenseWEWNETRZNY_MODEL> expenseWEWNETRZNYMODELList = new ArrayList<>();
 
 
     @GetMapping("/expensesByCostValue")
-    public ExpenseInfo getExpensesByCategory2(@RequestParam(required = false, defaultValue = "0") int costValue) {
-        //TODO: imlementujesz sobie logikę, gdy ktoś poda cost value
-        Iterable<Expense> all = accountingManager.findAll();
-
-        List<Expense> actualList = StreamSupport
-                .stream(all.spliterator(), false)
-                .collect(Collectors.toList());
-
-        ExpenseInfo expenseInfo = new ExpenseInfo();
-
-        if(costValue <= 0) {
-            //TODO: implemtnacja gdy ktos nie poda costValue
+    public ExpenseInfo getExpensesByCostValue(@RequestParam(required = false, defaultValue = "0") int costValue) {
+        if (costValue <= 0) {
+            //throw BadRequest
             return new ExpenseInfo();
-        } else {
-            List<Expense> listCostValue = actualList.stream()
-                    .filter(e -> e.getCostValue() == costValue)
-                    .collect((Collectors.toList()));
-            Integer sum = listCostValue.stream()
-                    .map(e -> e.getCostValue())
-                    .reduce(0, Integer::sum);
-
-            expenseInfo.setList(listCostValue);
-            expenseInfo.setSumOfExpenses(sum);
-
-            return expenseInfo;
         }
 
-    }
-    @GetMapping("/expensesByConstructionSiteNo")
-    public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false, defaultValue = "Wieliczka") String requestConstruction){
-        Iterable<Expense> all = accountingManager.findAll();
+        List<ExpenseWEWNETRZNY_MODEL> actualList = accountingManager.findAll();
+        List<ExpenseWEWNETRZNY_MODEL> listCostValue = expenseHelper.getListCostValue(costValue, actualList);
+        Integer sum = expenseHelper.sumCostValue(listCostValue);
 
-        List<Expense> actualList = StreamSupport
+        //TODO: add mapper which map wewnetrznyMODEL to some response
+        //List<JakisObiektDlaKlienta> dlaKlienta =  mapper.map(listCostValue)
+
+        ExpenseInfo expenseInfo = new ExpenseInfo();
+        expenseInfo.setList(listCostValue);
+//        expenseInfo.setList(dlaKlienta);
+        expenseInfo.setSumOfExpenses(sum);
+
+        return expenseInfo;
+
+    }
+
+
+//        @GetMapping("/expensesByCostValue")
+//        public ExpenseInfo getExpensesByCategory2(@RequestParam(required = false, defaultValue = "0") int costValue) {
+//            TODO: imlementujesz sobie logikę, gdy ktoś poda cost value
+//            List<Expense> actualList = accountingManager.findAll();
+//
+//        List<Expense> actualList = StreamSupport
+//                .stream(all.spliterator(), false)
+//                .collect(Collectors.toList());
+
+//            ExpenseInfo expenseInfo = new ExpenseInfo();
+//
+//            if(costValue <= 0) {
+//                TODO: implemtnacja gdy ktos nie poda costValue
+//                return new ExpenseInfo();
+//            } else {
+//                List<Expense> listCostValue = actualList.stream()
+//                        .filter(e -> e.getCostValue() == costValue)
+//                        .collect((Collectors.toList()));
+//                Integer sum = listCostValue.stream()
+//                        .map(e -> e.getCostValue())
+//                        .reduce(0, Integer::sum);
+//
+//                expenseInfo.setList(listCostValue);
+//                expenseInfo.setSumOfExpenses(sum);
+//
+//                return expenseInfo;
+//            }
+//
+
+    @GetMapping("/expensesByConstructionSiteNo")
+    public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false, defaultValue = "Wieliczka") String requestConstruction) {
+        Iterable<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
+
+        List<ExpenseWEWNETRZNY_MODEL> actualList = StreamSupport
                 .stream(all.spliterator(), false)
                 .collect(Collectors.toList());
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
 
-        if(requestConstruction.equals("Wieliczka")) {
+        if (requestConstruction.equals("Wieliczka")) {
 //            TODO: implemtnacj gdy ktos nie poda nazyw budowy
             return new ExpenseInfo();
         } else {
-            List<Expense> collectConstructionList = actualList.stream()
+            List<ExpenseWEWNETRZNY_MODEL> collectConstructionList = actualList.stream()
                     .filter(e -> e.getConstructionSiteNo().getConstruction().equals(requestConstruction))
                     .collect((Collectors.toList()));
 
             Integer sum = collectConstructionList.stream()
-                    .map(Expense::getCostValue)
+                    .map(ExpenseWEWNETRZNY_MODEL::getCostValue)
                     .reduce(0, Integer::sum);
 
             expenseInfo.setList(collectConstructionList);
@@ -82,26 +108,27 @@ public class InvoiceAccounting {
             return expenseInfo;
         }
     }
-    @GetMapping("/expensesByPaidCost")
-    public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false) Boolean requestPaidCost){
-        Iterable<Expense> all = accountingManager.findAll();
 
-        List<Expense> actualList = StreamSupport
+    @GetMapping("/expensesByPaidCost")
+    public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false) Boolean requestPaidCost) {
+        Iterable<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
+
+        List<ExpenseWEWNETRZNY_MODEL> actualList = StreamSupport
                 .stream(all.spliterator(), false)
                 .collect(Collectors.toList());
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
 
-        if(requestPaidCost.equals(false)) {
+        if (requestPaidCost.equals(false)) {
 //            TODO: implemtnacj gdy ktos nie poda nazyw budowy
             return new ExpenseInfo();
         } else {
-            List<Expense> collectConstructionList = actualList.stream()
+            List<ExpenseWEWNETRZNY_MODEL> collectConstructionList = actualList.stream()
                     .filter(e -> e.isPaidCost() == requestPaidCost)
                     .collect(Collectors.toList());
 
             Integer sum = collectConstructionList.stream()
-                    .map(Expense::getCostValue)
+                    .map(ExpenseWEWNETRZNY_MODEL::getCostValue)
                     .reduce(0, Integer::sum);
 
             expenseInfo.setList(collectConstructionList);
@@ -110,7 +137,6 @@ public class InvoiceAccounting {
             return expenseInfo;
         }
     }
-
 
 
     //    @GetMapping("/expense")
@@ -119,7 +145,7 @@ public class InvoiceAccounting {
 //    }
 
     @GetMapping("/byId")
-    public Optional<Expense> getById(@RequestParam(defaultValue = "1") Long index) {
+    public Optional<ExpenseWEWNETRZNY_MODEL> getById(@RequestParam(defaultValue = "1") Long index) {
         return accountingManager.findById(index);
     }
 
@@ -129,9 +155,9 @@ public class InvoiceAccounting {
 //    }
     @GetMapping("/allexpenses")
     public ExpenseInfo getAllexpenses() {
-        Iterable<Expense> all = accountingManager.findAll();
+        Iterable<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
 
-        List<Expense> actualList = StreamSupport
+        List<ExpenseWEWNETRZNY_MODEL> actualList = StreamSupport
                 .stream(all.spliterator(), false)
                 .collect(Collectors.toList());
 
@@ -152,9 +178,9 @@ public class InvoiceAccounting {
 
 //    @QueryParam("place") enum place),@QueryParam("transportobcy") enum trenasportobcy),@QueryParam("paindcost") double paidcost)
     {
-        Iterable<Expense> all = accountingManager.findAll();
+        Iterable<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
 
-        List<Expense> actualList = StreamSupport
+        List<ExpenseWEWNETRZNY_MODEL> actualList = StreamSupport
                 .stream(all.spliterator(), false)
                 .collect(Collectors.toList());
 
@@ -179,9 +205,9 @@ public class InvoiceAccounting {
 
 
     @PostMapping("/addExpense")
-    public boolean addExpense(@RequestBody Expense expense) {
+    public boolean addExpense(@RequestBody ExpenseWEWNETRZNY_MODEL expenseWEWNETRZNYMODEL) {
 //        return accountingManager.save(expense);
-        return accountingManager.save(expense);
+        return accountingManager.save(expenseWEWNETRZNYMODEL);
     }
 
     @DeleteMapping("/deleteById")

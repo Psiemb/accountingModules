@@ -1,11 +1,10 @@
 package com.cwiczenia.ksiegowanie.entity;
 
 
-import javax.persistence.*;
 import java.util.Date;
 
 //@Entity
-public class Expense {
+public class ExpenseWEWNETRZNY_MODEL {
 
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Id
@@ -15,16 +14,17 @@ public class Expense {
     private ConstructionSiteNo constructionSiteNo;
     private CostNoForConstructionSiteNo costNoForConstructionSiteNo;
     private boolean paidCost;
+    private String jakiesTajneDane;
 
 
-    public Expense() {
+    public ExpenseWEWNETRZNY_MODEL() {
     }
 
-    public Expense(boolean paidCost) {
+    public ExpenseWEWNETRZNY_MODEL(boolean paidCost) {
         this.paidCost = paidCost;
     }
 
-    public Expense(Long id, int costValue, ConstructionSiteNo constructionSiteNo, CostNoForConstructionSiteNo costNoForConstructionSiteNo, boolean paidCost) {
+    public ExpenseWEWNETRZNY_MODEL(Long id, int costValue, ConstructionSiteNo constructionSiteNo, CostNoForConstructionSiteNo costNoForConstructionSiteNo, boolean paidCost) {
         this.id = id;
         this.costValue = costValue;
         this.constructionSiteNo = constructionSiteNo;
@@ -52,8 +52,9 @@ public class Expense {
         return costValue;
     }
 
-    public void setCostValue(int costValue) {
+    public ExpenseWEWNETRZNY_MODEL setCostValue(int costValue) {
         this.costValue = costValue;
+        return this;
     }
 
 

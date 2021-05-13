@@ -2,8 +2,7 @@ package com.cwiczenia.ksiegowanie.dao;
 
 import com.cwiczenia.ksiegowanie.entity.ConstructionSiteNo;
 import com.cwiczenia.ksiegowanie.entity.CostNoForConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.Expense;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -16,44 +15,40 @@ import java.util.Optional;
 public class AccountingManager {
 
     //    private AccoutingRepo accoutingRepo;
-    private List<Expense> expenseList = new ArrayList<>();
-
-    @Autowired
-    public AccountingManager(List<Expense> expenseList) {
-        this.expenseList = expenseList;
-    }
+    private List<ExpenseWEWNETRZNY_MODEL> expenseWEWNETRZNYMODELList = new ArrayList<>();
 
 //    @Autowired
 //    public AccountingManager(AccoutingRepo accoutingRepo) {
 //        this.accoutingRepo = accoutingRepo;
 //    }
 
-    public Optional<Expense> findById(Long id) {
+    public Optional<ExpenseWEWNETRZNY_MODEL> findById(Long id) {
 //        return accoutingRepo.findById(id);
-        return expenseList.stream()
+        return expenseWEWNETRZNYMODELList.stream()
                 .filter(e -> e.getId().equals(id))
-                .findAny();
+                .findFirst();
     }
 
-    public Iterable<Expense> findAll() {
+    public List<ExpenseWEWNETRZNY_MODEL> findAll() {
 //        return accoutingRepo.findAll();
-        return expenseList;
+        return expenseWEWNETRZNYMODELList;
     }
 
-    public boolean save(Expense expense) {
+    public boolean save(ExpenseWEWNETRZNY_MODEL expenseWEWNETRZNYMODEL) {
 //        return accoutingRepo.save(expense);
-        return expenseList.add(expense);
+        return expenseWEWNETRZNYMODELList.add(expenseWEWNETRZNYMODEL);
     }
 
     public void deleteById(Long id) {
 //        accoutingRepo.deleteById(id);
-        expenseList.remove(id);
+        expenseWEWNETRZNYMODELList.remove(id);
     }
 
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
-        save(new Expense(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false));
+        save(new ExpenseWEWNETRZNY_MODEL(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false));
+        save(null);
     }
 
 }

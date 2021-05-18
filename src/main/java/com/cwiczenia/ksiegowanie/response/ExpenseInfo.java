@@ -1,7 +1,5 @@
 package com.cwiczenia.ksiegowanie.response;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
-
 import java.util.List;
 
 public class ExpenseInfo {

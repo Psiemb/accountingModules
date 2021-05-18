@@ -1,9 +1,8 @@
 package com.cwiczenia.ksiegowanie.entity;
 
 
-
-
 public class ConstructionSiteNo {
+
     private String construction;
 
     public ConstructionSiteNo(String construction) {

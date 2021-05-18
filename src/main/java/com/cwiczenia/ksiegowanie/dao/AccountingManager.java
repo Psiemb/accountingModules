@@ -2,7 +2,7 @@ package com.cwiczenia.ksiegowanie.dao;
 
 import com.cwiczenia.ksiegowanie.entity.ConstructionSiteNo;
 import com.cwiczenia.ksiegowanie.entity.CostNoForConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
+import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -15,26 +15,26 @@ import java.util.Optional;
 public class AccountingManager {
 
     //    private AccoutingRepo accoutingRepo;
-    private List<ExpenseWEWNETRZNY_MODEL> expenseWEWNETRZNYMODELList = new ArrayList<>();
+    private List<ExpenseInternalEntity> expenseWEWNETRZNYMODELList = new ArrayList<>();
 
 //    @Autowired
 //    public AccountingManager(AccoutingRepo accoutingRepo) {
 //        this.accoutingRepo = accoutingRepo;
 //    }
 
-    public Optional<ExpenseWEWNETRZNY_MODEL> findById(Long id) {
+    public Optional<ExpenseInternalEntity> findById(Long id) {
 //        return accoutingRepo.findById(id);
         return expenseWEWNETRZNYMODELList.stream()
                 .filter(e -> e.getId().equals(id))
                 .findFirst();
     }
 
-    public List<ExpenseWEWNETRZNY_MODEL> findAll() {
+    public List<ExpenseInternalEntity> findAll() {
 //        return accoutingRepo.findAll();
         return expenseWEWNETRZNYMODELList;
     }
 
-    public boolean save(ExpenseWEWNETRZNY_MODEL expenseWEWNETRZNYMODEL) {
+    public boolean save(ExpenseInternalEntity expenseWEWNETRZNYMODEL) {
 //        return accoutingRepo.save(expense);
         return expenseWEWNETRZNYMODELList.add(expenseWEWNETRZNYMODEL);
     }
@@ -47,8 +47,8 @@ public class AccountingManager {
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
-        save(new ExpenseWEWNETRZNY_MODEL(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false));
-        save(null);
+        save(new ExpenseInternalEntity(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false));
+//        save(null);
     }
 
 }

@@ -1,22 +1,30 @@
 package com.cwiczenia.ksiegowanie.util;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
+import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Component
 public class ExpenseHelper {
 
-    public Integer sumCostValue(List<ExpenseWEWNETRZNY_MODEL> listCostValue) {
-        return listCostValue.stream()
-                .map(ExpenseWEWNETRZNY_MODEL::getCostValue)
+
+    //TODO: listCostValue == null
+    //TODO: elementy w liscie listCostValue == null
+    //TODO: getCostValue =- null
+    // TODO: getCostValue == ujemna licza -> co wtedy? Sumujesz?
+    //TODO: Unit Testy
+    public Integer sumCostValue(List<ExpenseInternalEntity> listCostValue) {
+        return Optional.ofNullable(listCostValue)
+                .orElse(new ArrayList<>())
+                .stream()
+                .filter(Objects::nonNull)
+                .map(ExpenseInternalEntity::getCostValue)
                 .reduce(0, Integer::sum);
     }
 
-    public List<ExpenseWEWNETRZNY_MODEL> getListCostValue(int costValue, List<ExpenseWEWNETRZNY_MODEL> actualList) {
+    public List<ExpenseInternalEntity> getListCostValue(int costValue, List<ExpenseInternalEntity> actualList) {
         return Optional.ofNullable(actualList)//Jeśli actualList jest nullem to wykonaj na pustej liscie (tej z orElse). Jezeli nie to tryb normalny.
                 .orElse(new ArrayList<>())
                 .stream()
@@ -25,20 +33,24 @@ public class ExpenseHelper {
                 .collect((Collectors.toList()));
     }
 
-    public List<ExpenseWEWNETRZNY_MODEL> getAllExpenses(Spliterator<ExpenseWEWNETRZNY_MODEL> spliterator) {
-        return StreamSupport
-                .stream(spliterator, false)
-                .collect(Collectors.toList());
+    public List<ExpenseInternalEntity> getConstructionList(String requestConstruction, List<ExpenseInternalEntity> actualList) {
+//        if(StringUtils.isBlank(requestConstruction)) {
+        if (Objects.isNull(requestConstruction)) {
+            return Collections.emptyList();
+        }
+
+        return Optional.ofNullable(actualList)
+                .orElse(new ArrayList<>())
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(e -> Objects.nonNull(e.getConstructionSiteNo()))
+                .filter(e -> Objects.nonNull(e.getConstructionSiteNo().getConstruction()))
+                .filter(e -> requestConstruction.equals(e.getConstructionSiteNo().getConstruction()))
+                .collect((Collectors.toList()));
     }
 
-    public List<ExpenseWEWNETRZNY_MODEL> getConstructionList(String requestConstruction, List<ExpenseWEWNETRZNY_MODEL> actualList) {
-        List<ExpenseWEWNETRZNY_MODEL> collectConstructionList = actualList.stream()
-                .filter(e -> e.getConstructionSiteNo().getConstruction().equals(requestConstruction))
-                .collect((Collectors.toList()));
-        return collectConstructionList;
-    }
-    public List<ExpenseWEWNETRZNY_MODEL> getPaidCostList(Boolean requestPaidCost, List<ExpenseWEWNETRZNY_MODEL> actualList) {
-        List<ExpenseWEWNETRZNY_MODEL> collectConstructionList = actualList.stream()
+    public List<ExpenseInternalEntity> getPaidCostList(Boolean requestPaidCost, List<ExpenseInternalEntity> actualList) {
+        List<ExpenseInternalEntity> collectConstructionList = actualList.stream()
                 .filter(e -> e.isPaidCost() == requestPaidCost)
                 .collect(Collectors.toList());
         return collectConstructionList;

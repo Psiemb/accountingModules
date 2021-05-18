@@ -1,18 +1,17 @@
 package com.cwiczenia.ksiegowanie.controller;
 
 import com.cwiczenia.ksiegowanie.dao.AccountingManager;
-import com.cwiczenia.ksiegowanie.entity.ExpenseWEWNETRZNY_MODEL;
+import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
 import com.cwiczenia.ksiegowanie.mapper.ExpenseResponseMapper;
 import com.cwiczenia.ksiegowanie.response.ExpenseInfo;
 import com.cwiczenia.ksiegowanie.response.ExpenseResponse;
 import com.cwiczenia.ksiegowanie.util.ExpenseHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class InvoiceAccounting {
@@ -21,15 +20,11 @@ public class InvoiceAccounting {
     private final AccountingManager accountingManager;
     private final ExpenseResponseMapper expenseResponseMapper;
 
-    @Autowired
     public InvoiceAccounting(ExpenseHelper expenseHelper, AccountingManager accountingManager, ExpenseResponseMapper expenseResponseMapper) {
         this.expenseHelper = expenseHelper;
         this.accountingManager = accountingManager;
         this.expenseResponseMapper = expenseResponseMapper;
     }
-
-//    @Autowired
-//    private List<ExpenseWEWNETRZNY_MODEL> expenseWEWNETRZNYMODELList = new ArrayList<>();
 
 
     @GetMapping("/expensesByCostValue")
@@ -39,8 +34,8 @@ public class InvoiceAccounting {
             return new ExpenseInfo();
         }
 
-        List<ExpenseWEWNETRZNY_MODEL> actualList = accountingManager.findAll();
-        List<ExpenseWEWNETRZNY_MODEL> listCostValue = expenseHelper.getListCostValue(costValue, actualList);
+        List<ExpenseInternalEntity> actualList = accountingManager.findAll();
+        List<ExpenseInternalEntity> listCostValue = expenseHelper.getListCostValue(costValue, actualList);
         Integer sum = expenseHelper.sumCostValue(listCostValue);
 
         //TODO: add mapper which map wewnetrznyMODEL to some response
@@ -85,14 +80,13 @@ public class InvoiceAccounting {
 
     @GetMapping("/expensesByConstructionSiteNo")
     public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false, defaultValue = "Wieliczka") String requestConstruction) {
-        if (requestConstruction.equals("Wieliczka")) {
+        if (Objects.isNull(requestConstruction) || requestConstruction.equals("Wieliczka")) {
 //            TODO: implemtnacj gdy ktos nie poda nazyw budowy
             return new ExpenseInfo();
         }
-        List<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
-        List<ExpenseWEWNETRZNY_MODEL> actualList = expenseHelper.getAllExpenses(all.spliterator());
-        List<ExpenseWEWNETRZNY_MODEL> collectConstructionList = expenseHelper.getConstructionList(requestConstruction, actualList);
-        Integer sum = expenseHelper.sumCostValue(actualList);
+        List<ExpenseInternalEntity> allExpenses = accountingManager.findAll();
+        List<ExpenseInternalEntity> collectConstructionList = expenseHelper.getConstructionList(requestConstruction, allExpenses);
+        Integer sum = expenseHelper.sumCostValue(allExpenses);
 
         ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(collectConstructionList);
 
@@ -111,10 +105,9 @@ public class InvoiceAccounting {
 //            TODO: implemtnacj gdy ktos nie poda nazyw budowy
             return new ExpenseInfo();
         }
-        List<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
-        List<ExpenseWEWNETRZNY_MODEL> actualList = expenseHelper.getAllExpenses(all.spliterator());
-        List<ExpenseWEWNETRZNY_MODEL> collectConstructionList = expenseHelper.getPaidCostList(requestPaidCost, actualList);
-        Integer sum = expenseHelper.sumCostValue(actualList);
+        List<ExpenseInternalEntity> all = accountingManager.findAll();
+        List<ExpenseInternalEntity> collectConstructionList = expenseHelper.getPaidCostList(requestPaidCost, all);
+        Integer sum = expenseHelper.sumCostValue(all);
 
         ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(collectConstructionList);
 
@@ -128,17 +121,16 @@ public class InvoiceAccounting {
     }
 
     @GetMapping("/byId")
-    public Optional<ExpenseWEWNETRZNY_MODEL> getById(@RequestParam(defaultValue = "1") Long index) {
+    public Optional<ExpenseInternalEntity> getById(@RequestParam(defaultValue = "1") Long index) {
         return accountingManager.findById(index);
     }
 
     @GetMapping("/allexpenses")
     public ExpenseInfo getAllexpenses() {
-        List<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
-        List<ExpenseWEWNETRZNY_MODEL> actualList = expenseHelper.getAllExpenses(all.spliterator());
-        Integer sum = expenseHelper.sumCostValue(actualList);
+        List<ExpenseInternalEntity> all = accountingManager.findAll();
+        Integer sum = expenseHelper.sumCostValue(all);
 
-        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(actualList);
+        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(all);
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
         expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
@@ -149,18 +141,12 @@ public class InvoiceAccounting {
     }
 
     @GetMapping("/expensesByCategory")
-    public ExpenseInfo getExpensesByCategory(@RequestParam double costValue, @RequestParam String wieliczka) {
-        List<ExpenseWEWNETRZNY_MODEL> all = accountingManager.findAll();
-        List<ExpenseWEWNETRZNY_MODEL> actualList = expenseHelper.getAllExpenses(all.spliterator());
+    public ExpenseInfo getExpensesByCategory(@RequestParam (required = false) double costValue, @RequestParam (required = true) String wieliczka) {
+        List<ExpenseInternalEntity> all = accountingManager.findAll();
         ExpenseInfo expenseInfo = new ExpenseInfo();
-        if (costValue != 0) {
-            List<Integer> collect = actualList.stream()
-                    .map(e -> e.getCostValue())
-                    .collect((Collectors.toList()));
-        }
-        Integer sum = expenseHelper.sumCostValue(actualList);
+        Integer sum = expenseHelper.sumCostValue(all);
 
-        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(actualList);
+        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(all);
 
         expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
 //        expenseInfo.setList(actualList);
@@ -171,7 +157,7 @@ public class InvoiceAccounting {
 
 
     @PostMapping("/addExpense")
-    public boolean addExpense(@RequestBody ExpenseWEWNETRZNY_MODEL expenseWEWNETRZNYMODEL) {
+    public boolean addExpense(@RequestBody ExpenseInternalEntity expenseWEWNETRZNYMODEL) {
 //        return accountingManager.save(expense);
         return accountingManager.save(expenseWEWNETRZNYMODEL);
     }

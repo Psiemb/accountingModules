@@ -4,19 +4,8 @@ import java.util.List;
 
 public class ExpenseInfo {
 
-//    private List<ExpenseWEWNETRZNY_MODEL> list;
-//    private List<JakisObiektDlaKlienta> list;
     private List<ExpenseResponse> expenseResponses;
     private int sumOfExpenses;
-
-//    public List<ExpenseWEWNETRZNY_MODEL> getList() {
-//        return list;
-//    }
-//
-//    public void setList(List<ExpenseWEWNETRZNY_MODEL> list) {
-//        this.list = list;
-//    }
-
 
     public List<ExpenseResponse> getExpenseResponses() {
         return expenseResponses;

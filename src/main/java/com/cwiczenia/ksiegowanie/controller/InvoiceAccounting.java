@@ -49,39 +49,9 @@ public class InvoiceAccounting {
 
     }
 
-//        @GetMapping("/expensesByCostValue")
-//        public ExpenseInfo getExpensesByCategory2(@RequestParam(required = false, defaultValue = "0") int costValue) {
-//            TODO: imlementujesz sobie logikę, gdy ktoś poda cost value
-//            List<Expense> actualList = accountingManager.findAll();
-//
-//        List<Expense> actualList = StreamSupport
-//                .stream(all.spliterator(), false)
-//                .collect(Collectors.toList());
-
-//            ExpenseInfo expenseInfo = new ExpenseInfo();
-//
-//            if(costValue <= 0) {
-//                TODO: implemtnacja gdy ktos nie poda costValue
-//                return new ExpenseInfo();
-//            } else {
-//                List<Expense> listCostValue = actualList.stream()
-//                        .filter(e -> e.getCostValue() == costValue)
-//                        .collect((Collectors.toList()));
-//                Integer sum = listCostValue.stream()
-//                        .map(e -> e.getCostValue())
-//                        .reduce(0, Integer::sum);
-//
-//                expenseInfo.setList(listCostValue);
-//                expenseInfo.setSumOfExpenses(sum);
-//
-//                return expenseInfo;
-//            }
-
-
     @GetMapping("/expensesByConstructionSiteNo")
     public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false, defaultValue = "Wieliczka") String requestConstruction) {
         if (Objects.isNull(requestConstruction) || requestConstruction.equals("Wieliczka")) {
-//            TODO: implemtnacj gdy ktos nie poda nazyw budowy
             return new ExpenseInfo();
         }
         List<ExpenseInternalEntity> allExpenses = accountingManager.findAll();
@@ -95,9 +65,7 @@ public class InvoiceAccounting {
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;
-
     }
-
 
     @GetMapping("/expensesByPaidCost")
     public ExpenseInfo getExpensesByConstructionSiteNo(@RequestParam(required = false) Boolean requestPaidCost) {
@@ -113,7 +81,6 @@ public class InvoiceAccounting {
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
         expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
-//            expenseInfo.setList(collectConstructionList);
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;
@@ -134,7 +101,6 @@ public class InvoiceAccounting {
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
         expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
-//        expenseInfo.setList(actualList);
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;
@@ -149,7 +115,6 @@ public class InvoiceAccounting {
         ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(all);
 
         expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
-//        expenseInfo.setList(actualList);
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;
@@ -158,7 +123,6 @@ public class InvoiceAccounting {
 
     @PostMapping("/addExpense")
     public boolean addExpense(@RequestBody ExpenseInternalEntity expenseWEWNETRZNYMODEL) {
-//        return accountingManager.save(expense);
         return accountingManager.save(expenseWEWNETRZNYMODEL);
     }
 
@@ -166,40 +130,5 @@ public class InvoiceAccounting {
     public void deleteExpense(@RequestParam Long index) {
         accountingManager.deleteById(index);
     }
-
-
-//    @PostMapping("/addexpense1")
-//    public List<Expense> addExpense1(@RequestBody ExpenseRequest request, @RequestParam(defaultValue = "1") Long id) {
-//        ConstructionSiteNo constructionSiteNo = request.getConstructionSiteNo();
-//        CostNoForConstructionSiteNo costNoForConstructionSiteNo = request.getCostNoForConstructionSiteNo();
-//        double costValue = request.getCostValue();
-//        boolean paidCost = request.isPaidCost();
-//        Expense expense = new Expense(costValue, constructionSiteNo, costNoForConstructionSiteNo, paidCost);
-//        expenseList.add(expense);
-//
-//        return expenseList;
-//    }
-
-//
-//    @PostMapping("/addexpense")
-//    public ExpenseInfo addExpense(@RequestBody ExpenseRequest request) {
-//        ConstructionSiteNo constructionSiteNo = request.getConstructionSiteNo();
-//        CostNoForConstructionSiteNo costNoForConstructionSiteNo = request.getCostNoForConstructionSiteNo();
-//        double costValue = request.getCostValue();
-//        boolean paidCost = request.isPaidCost();
-//        Expense expense = new Expense(costValue, constructionSiteNo, costNoForConstructionSiteNo, paidCost);
-//        expenseList.add(expense);
-//
-//        Double sumOfExpenses = expenseList.stream()
-//                .map(Expense::getCostValue)
-//                .reduce(0.0, Double::sum);
-//
-//        ExpenseInfo expenseInfo = new ExpenseInfo();
-//        expenseInfo.setList(this.expenseList);
-//        expenseInfo.setSumOfExpenses(sumOfExpenses);
-//
-//        return expenseInfo;
-//    }
-
 
 }

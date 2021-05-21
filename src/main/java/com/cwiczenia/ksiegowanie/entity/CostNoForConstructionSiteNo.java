@@ -8,11 +8,6 @@ public class CostNoForConstructionSiteNo {
         this.type = type;
     }
 
-    //    PLACE, TRANSPORT_OBCY
-//    , TRANSPORT_WLASNY, MATERIALY_PODSTAWOWE, ZURAWIE,
-//    ZAPLECZE_TOALETY, MATERIALY_POMOCNICZE_PALIWO,OCHRONA,SZALUNKI, KOSZTY_INNE
-
-
     public String getType() {
         return type;
     }

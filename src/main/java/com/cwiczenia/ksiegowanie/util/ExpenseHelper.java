@@ -20,6 +20,7 @@ public class ExpenseHelper {
                 .orElse(new ArrayList<>())
                 .stream()
                 .filter(Objects::nonNull)
+                .filter(e -> e.getCostValue() > 0)
                 .map(ExpenseInternalEntity::getCostValue)
                 .reduce(0, Integer::sum);
     }

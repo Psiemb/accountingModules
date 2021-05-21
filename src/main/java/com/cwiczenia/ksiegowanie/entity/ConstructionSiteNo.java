@@ -9,10 +9,6 @@ public class ConstructionSiteNo {
         this.construction = construction;
     }
 
-    //    BANDTKIEGO, WIELICZKA
-//    , PIJALNIA
-
-
     public String getConstruction() {
         return construction;
     }

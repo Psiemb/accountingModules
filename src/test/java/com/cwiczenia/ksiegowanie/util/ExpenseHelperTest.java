@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ExpenseHelperTest {
 
@@ -19,7 +20,7 @@ class ExpenseHelperTest {
     }
 
     @Test
-    void test2() {
+    void sumOfInvoicesOnCostList() {
         // when
         Integer result = expenseHelper.sumCostValue(null);
         // then
@@ -27,7 +28,7 @@ class ExpenseHelperTest {
     }
 
     @Test
-    void test3ElementOnCostValueListIsNull() {
+    void elementOnCostValueListIsNull() {
         // given
         List<ExpenseInternalEntity> expens = Arrays.asList(null, new ExpenseInternalEntity());
 
@@ -39,19 +40,7 @@ class ExpenseHelperTest {
     }
 
     @Test
-    void dodatanieWartosciFaktury() {
-        // given
-        List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(5), new ExpenseInternalEntity().setCostValue(10));
-
-        // when
-        Integer result = expenseHelper.sumCostValue(expens);
-
-        // then
-        assertEquals(10, result);
-    }
-
-    @Test
-    void test() {
+    void checkSumWhenInvoiceValueIsPlus() {
         // given
         List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(5), new ExpenseInternalEntity().setCostValue(10));
 
@@ -63,7 +52,7 @@ class ExpenseHelperTest {
     }
 
     @Test
-    void test4CostValuesAreMinus() {
+    void checkResultWhenInvoiceValueIsMinus() {
         // given
         List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(-10), new ExpenseInternalEntity().setCostValue(-101010));
 
@@ -74,7 +63,7 @@ class ExpenseHelperTest {
     }
 
     @Test
-    void test5CostValueIsMinusAndAnotherIsPlus() {
+    void costValueIsMinusAndAnotherIsPlus() {
         // given
         List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(-10), new ExpenseInternalEntity().setCostValue(101010));
 
@@ -82,11 +71,11 @@ class ExpenseHelperTest {
         // when
         Integer result = expenseHelper.sumCostValue(expens);
         // then
-        assertEquals(101000, result);
+        assertEquals(101010, result);
     }
 
     @Test
-    void testListCostValueIsNull() {
+    void listCostValueIsNull() {
         // given
         List<ExpenseInternalEntity> expens = null;
 
@@ -98,16 +87,16 @@ class ExpenseHelperTest {
 
 
     @Test
-    void testCostValueIsNullAndListCostValueIsNull() {
+    void costValueIsZeroAndListCostValueIsNull() {
         // given
         List<ExpenseInternalEntity> expens = null;
 //        ExpenseWEWNETRZNY_MODEL expenseWEWNETRZNY_model = new ExpenseWEWNETRZNY_MODEL();
 //        expenseWEWNETRZNY_model.setCostValue(0);
 
         // when
-        List<ExpenseInternalEntity> result = expenseHelper.getListCostValue(2, expens);
+        List<ExpenseInternalEntity> result = expenseHelper.getListCostValue(0, expens);
         // then
-        assertEquals(15, result);
+        assertNull(result);
     }
 
 

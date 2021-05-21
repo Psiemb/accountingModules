@@ -14,41 +14,29 @@ import java.util.Optional;
 @Service
 public class AccountingManager {
 
-    //    private AccoutingRepo accoutingRepo;
     private List<ExpenseInternalEntity> expenseWEWNETRZNYMODELList = new ArrayList<>();
 
-//    @Autowired
-//    public AccountingManager(AccoutingRepo accoutingRepo) {
-//        this.accoutingRepo = accoutingRepo;
-//    }
-
     public Optional<ExpenseInternalEntity> findById(Long id) {
-//        return accoutingRepo.findById(id);
         return expenseWEWNETRZNYMODELList.stream()
                 .filter(e -> e.getId().equals(id))
                 .findFirst();
     }
 
     public List<ExpenseInternalEntity> findAll() {
-//        return accoutingRepo.findAll();
         return expenseWEWNETRZNYMODELList;
     }
 
     public boolean save(ExpenseInternalEntity expenseWEWNETRZNYMODEL) {
-//        return accoutingRepo.save(expense);
         return expenseWEWNETRZNYMODELList.add(expenseWEWNETRZNYMODEL);
     }
 
     public void deleteById(Long id) {
-//        accoutingRepo.deleteById(id);
         expenseWEWNETRZNYMODELList.remove(id);
     }
-
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
         save(new ExpenseInternalEntity(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false));
-//        save(null);
     }
 
 }

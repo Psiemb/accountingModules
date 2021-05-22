@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 class ExpenseHelperTest {
 
@@ -30,10 +31,10 @@ class ExpenseHelperTest {
     @Test
     void elementOnCostValueListIsNull() {
         // given
-        List<ExpenseInternalEntity> expens = Arrays.asList(null, new ExpenseInternalEntity());
+        List<ExpenseInternalEntity> expenses = Arrays.asList(null, new ExpenseInternalEntity());
 
         // when
-        Integer result = expenseHelper.sumCostValue(expens);
+        Integer result = expenseHelper.sumCostValue(expenses);
 
         // then
         assertEquals(10, result);
@@ -42,10 +43,10 @@ class ExpenseHelperTest {
     @Test
     void checkSumWhenInvoiceValueIsPlus() {
         // given
-        List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(5), new ExpenseInternalEntity().setCostValue(10));
+        List<ExpenseInternalEntity> expenses = Arrays.asList(new ExpenseInternalEntity().setCostValue(5), new ExpenseInternalEntity().setCostValue(10));
 
         // when
-        Integer result = expenseHelper.sumCostValue(expens);
+        Integer result = expenseHelper.sumCostValue(expenses);
 
         // then
         assertEquals(15, result);
@@ -66,7 +67,6 @@ class ExpenseHelperTest {
     void costValueIsMinusAndAnotherIsPlus() {
         // given
         List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(-10), new ExpenseInternalEntity().setCostValue(101010));
-
 
         // when
         Integer result = expenseHelper.sumCostValue(expens);
@@ -96,7 +96,7 @@ class ExpenseHelperTest {
         // when
         List<ExpenseInternalEntity> result = expenseHelper.getListCostValue(0, expens);
         // then
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
 

@@ -5,16 +5,16 @@ import com.cwiczenia.ksiegowanie.entity.CostNoForConstructionSiteNo;
 
 public class ExpenseRequest {
 
-    private double costValue;
+    private int costValue;
     private ConstructionSiteNo constructionSiteNo;
     private CostNoForConstructionSiteNo costNoForConstructionSiteNo;
     private boolean paidCost;
 
-    public double getCostValue() {
+    public int getCostValue() {
         return costValue;
     }
 
-    public void setCostValue(double costValue) {
+    public void setCostValue(int costValue) {
         this.costValue = costValue;
     }
 

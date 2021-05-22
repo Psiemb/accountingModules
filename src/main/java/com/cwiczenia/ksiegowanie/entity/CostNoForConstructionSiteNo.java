@@ -8,6 +8,10 @@ public class CostNoForConstructionSiteNo {
         this.type = type;
     }
 
+    public CostNoForConstructionSiteNo() {
+
+    }
+
     public String getType() {
         return type;
     }

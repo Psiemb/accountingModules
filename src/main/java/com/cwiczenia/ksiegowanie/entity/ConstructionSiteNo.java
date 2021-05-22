@@ -9,6 +9,10 @@ public class ConstructionSiteNo {
         this.construction = construction;
     }
 
+    public ConstructionSiteNo() {
+
+    }
+
     public String getConstruction() {
         return construction;
     }

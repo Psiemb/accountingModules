@@ -9,16 +9,9 @@ import java.util.stream.Collectors;
 @Component
 public class ExpenseHelper {
 
-
-    //TODO: listCostValue == null
-    //TODO: elementy w liscie listCostValue == null
-    //TODO: getCostValue =- null
-    // TODO: getCostValue == ujemna licza -> co wtedy? Sumujesz?
-    //TODO: Unit Testy
     public Integer sumCostValue(List<ExpenseInternalEntity> listCostValue) {
         return Optional.ofNullable(listCostValue)
-                .orElse(new ArrayList<>())
-                .stream()
+                .orElse(Collections.emptyList()).stream()
                 .filter(Objects::nonNull)
                 .filter(e -> e.getCostValue() > 0)
                 .map(ExpenseInternalEntity::getCostValue)
@@ -26,9 +19,12 @@ public class ExpenseHelper {
     }
 
     public List<ExpenseInternalEntity> getListCostValue(int costValue, List<ExpenseInternalEntity> actualList) {
+        if (costValue <= 0) {
+            return Collections.emptyList();
+        }
+
         return Optional.ofNullable(actualList)//Jeśli actualList jest nullem to wykonaj na pustej liscie (tej z orElse). Jezeli nie to tryb normalny.
-                .orElse(new ArrayList<>())
-                .stream()
+                .orElse(Collections.emptyList()).stream()
                 .filter(Objects::nonNull) //To uchroni przed nulami linjka poniżej "e".
                 .filter(e -> e.getCostValue() == costValue)
                 .collect((Collectors.toList()));
@@ -36,12 +32,13 @@ public class ExpenseHelper {
 
     public List<ExpenseInternalEntity> getConstructionList(String requestConstruction, List<ExpenseInternalEntity> actualList) {
 //        if(StringUtils.isBlank(requestConstruction)) {
-        if (Objects.isNull(requestConstruction)) {
+        //TODO: WAZNE!! GDY String to sprawdzasz czy jest null LUB czy jest blank
+        if (Objects.isNull(requestConstruction) || requestConstruction.isEmpty()) {
             return Collections.emptyList();
         }
 
         return Optional.ofNullable(actualList)
-                .orElse(new ArrayList<>())
+                .orElse(Collections.emptyList())
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(e -> Objects.nonNull(e.getConstructionSiteNo()))
@@ -50,11 +47,11 @@ public class ExpenseHelper {
                 .collect((Collectors.toList()));
     }
 
-    public List<ExpenseInternalEntity> getPaidCostList(Boolean requestPaidCost, List<ExpenseInternalEntity> actualList) {
-        List<ExpenseInternalEntity> collectConstructionList = actualList.stream()
-                .filter(e -> e.isPaidCost() == requestPaidCost)
+    public List<ExpenseInternalEntity> getPaidExpenses(List<ExpenseInternalEntity> expenses) {
+        return Optional.ofNullable(expenses)
+                .orElse(Collections.emptyList()).stream()
+                .filter(ExpenseInternalEntity::isPaidCost)
                 .collect(Collectors.toList());
-        return collectConstructionList;
     }
 
 

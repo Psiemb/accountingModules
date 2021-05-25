@@ -1,6 +1,7 @@
 package com.cwiczenia.ksiegowanie.util;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.entity.income.Income;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -8,6 +9,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class ExpenseHelper {
+
+    public Integer sumIncomeValue(List<Income> incomes){
+        return Optional.ofNullable(incomes)
+                .orElse(Collections.emptyList()).stream()
+                .filter(Objects::nonNull)
+                .filter(e -> e.getIncomeValue() > 0 )
+                .map(Income::getIncomeValue)
+                .reduce(0, Integer::sum);
+
+    }
 
     public Integer sumCostValue(List<ExpenseInternalEntity> listCostValue) {
         return Optional.ofNullable(listCostValue)

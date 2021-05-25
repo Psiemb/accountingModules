@@ -1,7 +1,7 @@
-package com.cwiczenia.ksiegowanie.mapper;
+package com.cwiczenia.ksiegowanie.mapper.expense;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
-import com.cwiczenia.ksiegowanie.response.ExpenseResponse;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.response.expense.ExpenseResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.cwiczenia.ksiegowanie.entity;
+package com.cwiczenia.ksiegowanie.entity.expense;
 
 public class CostNoForConstructionSiteNo {
 

@@ -1,4 +1,4 @@
-package com.cwiczenia.ksiegowanie.request;
+package com.cwiczenia.ksiegowanie.request.expense;
 
 public class RequestById {
     private Long id;

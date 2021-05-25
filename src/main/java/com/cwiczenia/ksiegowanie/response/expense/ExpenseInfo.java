@@ -1,4 +1,4 @@
-package com.cwiczenia.ksiegowanie.response;
+package com.cwiczenia.ksiegowanie.response.expense;
 
 import java.util.List;
 

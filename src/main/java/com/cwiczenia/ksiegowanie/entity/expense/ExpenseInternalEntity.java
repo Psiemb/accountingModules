@@ -1,4 +1,4 @@
-package com.cwiczenia.ksiegowanie.entity;
+package com.cwiczenia.ksiegowanie.entity.expense;
 
 
 import java.util.Date;
@@ -14,7 +14,8 @@ public class ExpenseInternalEntity {
     private ConstructionSiteNo constructionSiteNo;
     private CostNoForConstructionSiteNo costNoForConstructionSiteNo;
     private boolean paidCost;
-    private String jakiesTajneDane;
+    private String name;
+
 
 
     public ExpenseInternalEntity() {
@@ -24,12 +25,13 @@ public class ExpenseInternalEntity {
         this.paidCost = paidCost;
     }
 
-    public ExpenseInternalEntity(Long id, int costValue, ConstructionSiteNo constructionSiteNo, CostNoForConstructionSiteNo costNoForConstructionSiteNo, boolean paidCost) {
+    public ExpenseInternalEntity(Long id, int costValue, ConstructionSiteNo constructionSiteNo, CostNoForConstructionSiteNo costNoForConstructionSiteNo, boolean paidCost, String name) {
         this.id = id;
         this.costValue = costValue;
         this.constructionSiteNo = constructionSiteNo;
         this.costNoForConstructionSiteNo = costNoForConstructionSiteNo;
         this.paidCost = paidCost;
+        this.name = name;
     }
 
     public Long getId() {
@@ -81,5 +83,13 @@ public class ExpenseInternalEntity {
 
     public void setPaidCost(boolean paidCost) {
         this.paidCost = paidCost;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -1,7 +1,7 @@
-package com.cwiczenia.ksiegowanie.request;
+package com.cwiczenia.ksiegowanie.request.expense;
 
-import com.cwiczenia.ksiegowanie.entity.ConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.CostNoForConstructionSiteNo;
+import com.cwiczenia.ksiegowanie.entity.expense.ConstructionSiteNo;
+import com.cwiczenia.ksiegowanie.entity.expense.CostNoForConstructionSiteNo;
 
 public class ExpenseRequest {
 

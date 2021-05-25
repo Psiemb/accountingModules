@@ -1,10 +1,11 @@
 package com.cwiczenia.ksiegowanie.mapper;
 
-import com.cwiczenia.ksiegowanie.entity.ConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.CostNoForConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
-import com.cwiczenia.ksiegowanie.request.ExpenseRequest;
-import com.cwiczenia.ksiegowanie.request.RequestById;
+import com.cwiczenia.ksiegowanie.entity.expense.ConstructionSiteNo;
+import com.cwiczenia.ksiegowanie.entity.expense.CostNoForConstructionSiteNo;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseRequestMapper;
+import com.cwiczenia.ksiegowanie.request.expense.ExpenseRequest;
+import com.cwiczenia.ksiegowanie.request.expense.RequestById;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

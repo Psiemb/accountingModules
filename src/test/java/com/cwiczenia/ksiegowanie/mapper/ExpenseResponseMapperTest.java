@@ -1,7 +1,8 @@
 package com.cwiczenia.ksiegowanie.mapper;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
-import com.cwiczenia.ksiegowanie.response.ExpenseResponse;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseResponseMapper;
+import com.cwiczenia.ksiegowanie.response.expense.ExpenseResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package com.cwiczenia.ksiegowanie.util;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

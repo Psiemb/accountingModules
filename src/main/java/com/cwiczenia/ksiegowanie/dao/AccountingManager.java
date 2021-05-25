@@ -1,8 +1,9 @@
 package com.cwiczenia.ksiegowanie.dao;
 
-import com.cwiczenia.ksiegowanie.entity.ConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.CostNoForConstructionSiteNo;
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.entity.expense.ConstructionSiteNo;
+import com.cwiczenia.ksiegowanie.entity.expense.CostNoForConstructionSiteNo;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.entity.income.Income;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,36 @@ import java.util.Optional;
 @Service
 public class AccountingManager {
 
-    private List<ExpenseInternalEntity> expenseWEWNETRZNYMODELList = new ArrayList<>();
+    private final List<ExpenseInternalEntity> expenseWEWNETRZNYMODELList = new ArrayList<>();
+    private final List<Income> incomes = new ArrayList<>();
+
+    public Optional<Income> findByReceivedPaymentOfIncome(boolean receivedPayment){
+        return incomes.stream()
+                .filter(e -> e.isReceivedPayment() == receivedPayment)
+                .findFirst();
+    }
+
+    public Optional<Income> findByIdIncome(Long id) {
+        return incomes.stream()
+                .filter(e -> e.getId().equals(id))
+                .findFirst();
+    }
+
+    public boolean saveIncome(Income income){
+        return incomes.add(income);
+    }
+
 
     public Optional<ExpenseInternalEntity> findById(Long id) {
         return expenseWEWNETRZNYMODELList.stream()
                 .filter(e -> e.getId().equals(id))
+                .findFirst();
+    }
+
+
+    public Optional<ExpenseInternalEntity> findByName(String name) {
+        return expenseWEWNETRZNYMODELList.stream()
+                .filter(e -> e.getName().equals(name))
                 .findFirst();
     }
 
@@ -36,7 +62,7 @@ public class AccountingManager {
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
-        save(new ExpenseInternalEntity(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false));
+        save(new ExpenseInternalEntity(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false, "WW"));
     }
 
 }

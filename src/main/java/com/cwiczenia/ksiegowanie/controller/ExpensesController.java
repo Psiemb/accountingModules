@@ -1,41 +1,69 @@
 package com.cwiczenia.ksiegowanie.controller;
 
 import com.cwiczenia.ksiegowanie.dao.AccountingManager;
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
-import com.cwiczenia.ksiegowanie.mapper.ExpenseRequestMapper;
-import com.cwiczenia.ksiegowanie.mapper.ExpenseResponseMapper;
-import com.cwiczenia.ksiegowanie.request.ExpenseRequest;
-import com.cwiczenia.ksiegowanie.request.RequestById;
-import com.cwiczenia.ksiegowanie.response.ExpenseInfo;
-import com.cwiczenia.ksiegowanie.response.ExpenseResponse;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.entity.income.Income;
+import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseRequestMapper;
+import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseResponseMapper;
+import com.cwiczenia.ksiegowanie.mapper.income.IncomeRequestMapper;
+import com.cwiczenia.ksiegowanie.request.expense.ExpenseRequest;
+import com.cwiczenia.ksiegowanie.request.expense.RequestById;
+import com.cwiczenia.ksiegowanie.request.income.IncomeRequest;
+import com.cwiczenia.ksiegowanie.request.income.RequestByIdIncome;
+import com.cwiczenia.ksiegowanie.response.expense.ExpenseInfo;
+import com.cwiczenia.ksiegowanie.response.expense.ExpenseResponse;
+import com.cwiczenia.ksiegowanie.response.income.IncomeInfo;
 import com.cwiczenia.ksiegowanie.util.ExpenseHelper;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class ExpensesController {
-    private final ExpenseHelper expenseHelper;
 
+    private final ExpenseHelper expenseHelper;
     private final AccountingManager accountingManager;
     private final ExpenseResponseMapper expenseResponseMapper;
     private final ExpenseRequestMapper expenseRequestMapper;
+    private final IncomeRequestMapper incomeRequestMapper;
 
-    public ExpensesController(ExpenseHelper expenseHelper, AccountingManager accountingManager, ExpenseResponseMapper expenseResponseMapper, ExpenseRequestMapper expenseRequestMapper) {
+    public ExpensesController(ExpenseHelper expenseHelper, AccountingManager accountingManager, ExpenseResponseMapper expenseResponseMapper, ExpenseRequestMapper expenseRequestMapper, IncomeRequestMapper incomeRequestMapper) {
         this.expenseHelper = expenseHelper;
         this.accountingManager = accountingManager;
         this.expenseResponseMapper = expenseResponseMapper;
         this.expenseRequestMapper = expenseRequestMapper;
+        this.incomeRequestMapper = incomeRequestMapper;
     }
 
+    @GetMapping("/incomesByReceivedPayment")
+    public IncomeInfo getByReceivedPaymentOfIncome(@RequestParam boolean paid) {
+        Optional<Income> receivedPaymentOfIncome = accountingManager.findByReceivedPaymentOfIncome(paid);
+        List<Income> incomes = Arrays.asList(receivedPaymentOfIncome.get());
+        Integer integer = expenseHelper.sumIncomeValue(incomes);
+
+        IncomeInfo incomeInfo = new IncomeInfo();
+        incomeInfo.setIncomes(incomes);
+        incomeInfo.setSum(integer);
+        return incomeInfo;
+
+    }
+    @GetMapping("/byIdIncome")
+    public Optional<Income> getByIdIncome(@RequestParam RequestByIdIncome requestByIdIncome) {
+        Income income = incomeRequestMapper.mapToIncomeById(requestByIdIncome);
+        return accountingManager.findByIdIncome(income.getId());
+    }
+
+
+    @PostMapping
+    public boolean addIncome(@RequestBody IncomeRequest incomeRequest) {
+        Income income = incomeRequestMapper.mapToIncomeInfo(incomeRequest);
+        return accountingManager.saveIncome(income);
+    }
+
+
     @PostMapping("/addExpense")
+
     public boolean addExpense(@RequestBody ExpenseRequest expensesRequest) {
-        //TODO: w request wymgasz, by uzytkownik wyslal Ci request zgodny z Twoim wewnętrznym modelem
-        //TODO: mapper, ktory zmapuje obietk z request na wewnetrzny model
-        //TODO: Unit testy do mapper
         ExpenseInternalEntity expenseInternalEntity = expenseRequestMapper.mapToExpenseInternalEntity(expensesRequest);
 
         return accountingManager.save(expenseInternalEntity);
@@ -48,23 +76,19 @@ public class ExpensesController {
 
     @GetMapping("/byId")
     public Optional<ExpenseInternalEntity> getById(@RequestParam RequestById requestById) {
-        //TODO: zwracasz wewneßrzny model!!!
-        //TODO: stworzyc nowa klase Response
-        //TODO: stworzy mappera, który zmapuje wewnętrzny model na tą nowa klase
-        //TODO: zwrócić nowa klase (obiekt)
         ExpenseInternalEntity expenseById = expenseRequestMapper.mapToExpenseInternalEntityBYId(requestById);
         return accountingManager.findById(expenseById.getId());
     }
 
-    @GetMapping("/allexpenses")
-    public ExpenseInfo getAllexpenses() {
+    @GetMapping("/allExpenses")
+    public ExpenseInfo getAllExpenses() {
         List<ExpenseInternalEntity> all = accountingManager.findAll();
         Integer sum = expenseHelper.sumCostValue(all);
 
-        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(all);
+        ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(all);
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
-        expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
+        expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponse));
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;
@@ -81,10 +105,11 @@ public class ExpensesController {
         List<ExpenseInternalEntity> listCostValue = expenseHelper.getListCostValue(costValue, actualList);
         Integer sum = expenseHelper.sumCostValue(listCostValue);
 
-        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(listCostValue);
+        ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(listCostValue);
+        List<ExpenseResponse> expenseResponses = Arrays.asList(expenseResponse);
 
         ExpenseInfo expenseInfo = new ExpenseInfo();
-        expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
+        expenseInfo.setExpenseResponses(expenseResponses);
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;
@@ -124,15 +149,21 @@ public class ExpensesController {
         return expenseInfo;
     }
 
-    @GetMapping("/expensesByCategory")
-    public ExpenseInfo getExpensesByCategory(@RequestParam(required = false) double costValue, @RequestParam(required = true) String wieliczka) {
-        List<ExpenseInternalEntity> all = accountingManager.findAll();
+    @GetMapping("/expensesByNameOfConstructionSite")
+    public ExpenseInfo getExpensesByNameOfConstructionSite(@RequestParam String name) {
+
+        Optional<ExpenseInternalEntity> byName = accountingManager.findByName(name);
+        if (Objects.isNull(byName)) {
+            return null;
+        }
         ExpenseInfo expenseInfo = new ExpenseInfo();
-        Integer sum = expenseHelper.sumCostValue(all);
+        List<ExpenseInternalEntity> expenseInternalEntities = Arrays.asList(byName.get());
+        Integer sum = expenseHelper.sumCostValue(expenseInternalEntities);
 
-        ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(all);
+        ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(expenseInternalEntities);
+        List<ExpenseResponse> expenseResponses = Arrays.asList(expenseResponse);
 
-        expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponseAfterMapping));
+        expenseInfo.setExpenseResponses(expenseResponses);
         expenseInfo.setSumOfExpenses(sum);
 
         return expenseInfo;

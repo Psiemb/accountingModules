@@ -1,11 +1,13 @@
-package com.cwiczenia.ksiegowanie.mapper;
+package com.cwiczenia.ksiegowanie.mapper.expense;
 
-import com.cwiczenia.ksiegowanie.entity.ExpenseInternalEntity;
-import com.cwiczenia.ksiegowanie.request.ExpenseRequest;
-import com.cwiczenia.ksiegowanie.request.RequestById;
+import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
+import com.cwiczenia.ksiegowanie.request.expense.ExpenseRequest;
+import com.cwiczenia.ksiegowanie.request.expense.RequestById;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Component
 public class ExpenseRequestMapper {
 
     public ExpenseInternalEntity mapToExpenseInternalEntity(ExpenseRequest expenseRequest) {

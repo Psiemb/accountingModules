@@ -8,6 +8,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,10 @@ public class AccountingManager {
 
     private final List<ExpenseInternalEntity> expenseWEWNETRZNYMODELList = new ArrayList<>();
     private final List<Income> incomes = new ArrayList<>();
+
+    public List<Income> findAllIncomes(){
+        return incomes;
+    }
 
     public Optional<Income> findByReceivedPaymentOfIncome(boolean receivedPayment){
         return incomes.stream()
@@ -63,6 +68,7 @@ public class AccountingManager {
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
         save(new ExpenseInternalEntity(1L, 3400, new ConstructionSiteNo("Wieliczka"), new CostNoForConstructionSiteNo("Transport obcy"), false, "WW"));
+        saveIncome(new Income(1L,342,true));
     }
 
 }

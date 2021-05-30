@@ -16,8 +16,6 @@ public class ExpenseInternalEntity {
     private boolean paidCost;
     private String name;
 
-
-
     public ExpenseInternalEntity() {
     }
 
@@ -58,7 +56,6 @@ public class ExpenseInternalEntity {
         this.costValue = costValue;
         return this;
     }
-
 
     public ConstructionSiteNo getConstructionSiteNo() {
         return constructionSiteNo;

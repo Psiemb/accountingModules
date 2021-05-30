@@ -1,37 +1,21 @@
-package com.cwiczenia.ksiegowanie.entity.income;
+package com.cwiczenia.ksiegowanie.response.income;
 
 import javax.xml.crypto.Data;
 
-public class Income {
+public class IncomeResponse {
 
-    private Long id;
     private Data actualDate;
     private int incomeValue;
     private boolean receivedPayment;
 
-    public Income() {
-    }
-
-    public Income(Long id, int incomeValue, boolean receivedPayment) {
-        this.id = id;
+    public IncomeResponse(Data actualDate, int incomeValue, boolean receivedPayment) {
+        this.actualDate = actualDate;
         this.incomeValue = incomeValue;
         this.receivedPayment = receivedPayment;
     }
 
-    public Income(int incomeValue) {
-        this.incomeValue = incomeValue;
-    }
+    public IncomeResponse() {
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Income(boolean receivedPayment) {
-        this.receivedPayment = receivedPayment;
     }
 
     public Data getActualDate() {
@@ -57,5 +41,4 @@ public class Income {
     public void setReceivedPayment(boolean receivedPayment) {
         this.receivedPayment = receivedPayment;
     }
-
 }

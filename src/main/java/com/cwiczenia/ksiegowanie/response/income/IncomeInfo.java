@@ -6,23 +6,22 @@ import java.util.List;
 
 public class IncomeInfo {
 
-    private List<Income> incomes;
+    private List<IncomeResponse> incomes;
     private int sum;
 
-    public IncomeInfo(List<Income> incomes, int sum) {
+    public IncomeInfo() {
+    }
+
+    public IncomeInfo(List<IncomeResponse> incomes, int sum) {
         this.incomes = incomes;
         this.sum = sum;
     }
 
-    public IncomeInfo() {
-
-    }
-
-    public List<Income> getIncomes() {
+    public List<IncomeResponse> getIncomes() {
         return incomes;
     }
 
-    public void setIncomes(List<Income> incomes) {
+    public void setIncomes(List<IncomeResponse> incomes) {
         this.incomes = incomes;
     }
 

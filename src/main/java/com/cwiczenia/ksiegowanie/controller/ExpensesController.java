@@ -6,6 +6,7 @@ import com.cwiczenia.ksiegowanie.entity.income.Income;
 import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseRequestMapper;
 import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseResponseMapper;
 import com.cwiczenia.ksiegowanie.mapper.income.IncomeRequestMapper;
+import com.cwiczenia.ksiegowanie.mapper.income.IncomeResponseMapper;
 import com.cwiczenia.ksiegowanie.request.expense.ExpenseRequest;
 import com.cwiczenia.ksiegowanie.request.expense.RequestById;
 import com.cwiczenia.ksiegowanie.request.income.IncomeRequest;
@@ -13,6 +14,7 @@ import com.cwiczenia.ksiegowanie.request.income.RequestByIdIncome;
 import com.cwiczenia.ksiegowanie.response.expense.ExpenseInfo;
 import com.cwiczenia.ksiegowanie.response.expense.ExpenseResponse;
 import com.cwiczenia.ksiegowanie.response.income.IncomeInfo;
+import com.cwiczenia.ksiegowanie.response.income.IncomeResponse;
 import com.cwiczenia.ksiegowanie.util.ExpenseHelper;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +28,27 @@ public class ExpensesController {
     private final ExpenseResponseMapper expenseResponseMapper;
     private final ExpenseRequestMapper expenseRequestMapper;
     private final IncomeRequestMapper incomeRequestMapper;
+    private final IncomeResponseMapper incomeResponseMapper;
 
-    public ExpensesController(ExpenseHelper expenseHelper, AccountingManager accountingManager, ExpenseResponseMapper expenseResponseMapper, ExpenseRequestMapper expenseRequestMapper, IncomeRequestMapper incomeRequestMapper) {
+    public ExpensesController(ExpenseHelper expenseHelper, AccountingManager accountingManager, ExpenseResponseMapper expenseResponseMapper, ExpenseRequestMapper expenseRequestMapper, IncomeRequestMapper incomeRequestMapper, IncomeResponseMapper incomeResponseMapper) {
         this.expenseHelper = expenseHelper;
         this.accountingManager = accountingManager;
         this.expenseResponseMapper = expenseResponseMapper;
         this.expenseRequestMapper = expenseRequestMapper;
         this.incomeRequestMapper = incomeRequestMapper;
+        this.incomeResponseMapper = incomeResponseMapper;
+    }
+    @GetMapping("/allIncomes")
+    public IncomeInfo getAllIncomes() {
+        List<Income> allIncomes = accountingManager.findAllIncomes();
+        Integer sumOfAllIncomes = expenseHelper.sumIncomeValue(allIncomes);
+        IncomeResponse incomeResponse = incomeResponseMapper.mapIncomeToResponse(allIncomes);
+
+        IncomeInfo incomeInfo = new IncomeInfo();
+        incomeInfo.setIncomes((List<IncomeResponse>) incomeResponse);
+        incomeInfo.setSum(sumOfAllIncomes);
+
+        return incomeInfo;
     }
 
     @GetMapping("/incomesByReceivedPayment")
@@ -41,12 +57,15 @@ public class ExpensesController {
         List<Income> incomes = Arrays.asList(receivedPaymentOfIncome.get());
         Integer integer = expenseHelper.sumIncomeValue(incomes);
 
+        IncomeResponse incomeResponse = incomeResponseMapper.mapIncomeToResponse(incomes);
+
         IncomeInfo incomeInfo = new IncomeInfo();
-        incomeInfo.setIncomes(incomes);
+        incomeInfo.setIncomes((List<IncomeResponse>) incomeResponse);
         incomeInfo.setSum(integer);
         return incomeInfo;
 
     }
+
     @GetMapping("/byIdIncome")
     public Optional<Income> getByIdIncome(@RequestParam RequestByIdIncome requestByIdIncome) {
         Income income = incomeRequestMapper.mapToIncomeById(requestByIdIncome);
@@ -54,7 +73,7 @@ public class ExpensesController {
     }
 
 
-    @PostMapping
+    @PostMapping("/addIncome")
     public boolean addIncome(@RequestBody IncomeRequest incomeRequest) {
         Income income = incomeRequestMapper.mapToIncomeInfo(incomeRequest);
         return accountingManager.saveIncome(income);
@@ -79,6 +98,7 @@ public class ExpensesController {
         ExpenseInternalEntity expenseById = expenseRequestMapper.mapToExpenseInternalEntityBYId(requestById);
         return accountingManager.findById(expenseById.getId());
     }
+
 
     @GetMapping("/allExpenses")
     public ExpenseInfo getAllExpenses() {

@@ -10,6 +10,7 @@ import java.util.Objects;
 @Component
 public class ExpenseResponseMapper {
 
+    //TODO: trzeba zmienic get(0)
     public ExpenseResponse mapToResponse(List<ExpenseInternalEntity> source) {
         if (Objects.isNull(source) || Objects.isNull(source.get(0)) || source.get(0).getCostValue() < 0) {
             // throw exeption

@@ -2,19 +2,13 @@ package com.cwiczenia.ksiegowanie.controller;
 
 import com.cwiczenia.ksiegowanie.dao.AccountingManager;
 import com.cwiczenia.ksiegowanie.entity.expense.ExpenseInternalEntity;
-import com.cwiczenia.ksiegowanie.entity.income.Income;
 import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseRequestMapper;
 import com.cwiczenia.ksiegowanie.mapper.expense.ExpenseResponseMapper;
-import com.cwiczenia.ksiegowanie.mapper.income.IncomeRequestMapper;
-import com.cwiczenia.ksiegowanie.mapper.income.IncomeResponseMapper;
 import com.cwiczenia.ksiegowanie.request.expense.ExpenseRequest;
 import com.cwiczenia.ksiegowanie.request.expense.RequestById;
-import com.cwiczenia.ksiegowanie.request.income.IncomeRequest;
 import com.cwiczenia.ksiegowanie.response.expense.ExpenseInfo;
 import com.cwiczenia.ksiegowanie.response.expense.ExpenseResponse;
-import com.cwiczenia.ksiegowanie.response.income.IncomeInfo;
-import com.cwiczenia.ksiegowanie.response.income.IncomeResponse;
-import com.cwiczenia.ksiegowanie.util.ExpenseHelper;
+import com.cwiczenia.ksiegowanie.util.Helper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,83 +21,17 @@ import java.util.Optional;
 @RestController
 public class ExpensesController {
 
-    private final ExpenseHelper expenseHelper;
     private final AccountingManager accountingManager;
+    private final Helper helper;
     private final ExpenseResponseMapper expenseResponseMapper;
     private final ExpenseRequestMapper expenseRequestMapper;
-    private final IncomeRequestMapper incomeRequestMapper;
-    private final IncomeResponseMapper incomeResponseMapper;
 
-    public ExpensesController(ExpenseHelper expenseHelper, AccountingManager accountingManager, ExpenseResponseMapper expenseResponseMapper, ExpenseRequestMapper expenseRequestMapper, IncomeRequestMapper incomeRequestMapper, IncomeResponseMapper incomeResponseMapper) {
-        this.expenseHelper = expenseHelper;
+
+    public ExpensesController(AccountingManager accountingManager, Helper helper, ExpenseResponseMapper expenseResponseMapper, ExpenseRequestMapper expenseRequestMapper) {
         this.accountingManager = accountingManager;
+        this.helper = helper;
         this.expenseResponseMapper = expenseResponseMapper;
         this.expenseRequestMapper = expenseRequestMapper;
-        this.incomeRequestMapper = incomeRequestMapper;
-        this.incomeResponseMapper = incomeResponseMapper;
-    }
-
-    @GetMapping("/allIncomes")
-    public ResponseEntity<IncomeInfo> getAllIncomes() {
-        List<Income> allIncomes = accountingManager.findAllIncomes();
-        Integer sumOfAllIncomes = expenseHelper.sumIncomeValue(allIncomes);
-        IncomeResponse incomeResponse = incomeResponseMapper.mapIncomeToResponse(allIncomes);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(createIncomeInfoResponse(sumOfAllIncomes, incomeResponse));
-    }
-
-    @GetMapping("/incomesByReceivedPayment")
-    public ResponseEntity<IncomeInfo> getByReceivedPaymentOfIncome(@RequestParam boolean paid) {
-        Optional<Income> receivedPaymentOfIncome = accountingManager.findByReceivedPaymentOfIncome(paid);
-        if (!receivedPaymentOfIncome.isPresent()) {
-            //TODO: not found
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        List<Income> incomes = Collections.singletonList(receivedPaymentOfIncome.get());
-        Integer integer = expenseHelper.sumIncomeValue(incomes);
-        IncomeResponse incomeResponse = incomeResponseMapper.mapIncomeToResponse(incomes);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(createIncomeInfoResponse(integer, incomeResponse));
-    }
-
-    @GetMapping("/byIdIncome")
-    public ResponseEntity<Income> getByIdIncome(@RequestParam Long idIncome) {
-        Optional<Income> byIdIncome = accountingManager.findByIdIncome(idIncome);
-        return byIdIncome
-//                .map(wartoscNotNull -> ResponseEntity.ok(wartoscNotNull))
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-
-    }
-
-//    @GetMapping("/byIdIncom2e")
-//    public ResponseEntity<Income> getByIdIncome2(@RequestParam Long idIncome) {
-//        Optional<Income> byIdIncome = accountingManager.findByIdIncome(idIncome);
-//        if (!byIdIncome.isPresent()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//
-//        return ResponseEntity.ok(byIdIncome.get());
-//}
-
-
-    @PostMapping("/addIncome")
-    public ResponseEntity<Void> addIncome(@RequestBody IncomeRequest incomeRequest) {
-        Income income = incomeRequestMapper.mapToIncomeInfo(incomeRequest);
-        accountingManager.saveIncome(income);
-
-        //TODO; to jest tylko po to, byś wiedział że dzięki RespnseEntity możesz zwracać customowe informacje także w Headerach
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("testKey", "testValue");
-
-//        ResponseAddIncomeResponse responseAddIncomeResponse = new ResponseAddIncomeResponse();
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(responseAddIncomeResponse)
-//                .headers(httpHeaders)
-                .build();
     }
 
 
@@ -132,7 +60,7 @@ public class ExpensesController {
     @GetMapping("/allExpenses")
     public ResponseEntity<ExpenseInfo> getAllExpenses() {
         List<ExpenseInternalEntity> all = accountingManager.findAll();
-        Integer sum = expenseHelper.sumCostValue(all);
+        Integer sum = helper.sumCostValue(all);
 
         ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(all);
 
@@ -147,8 +75,8 @@ public class ExpensesController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         List<ExpenseInternalEntity> actualList = accountingManager.findAll();
-        List<ExpenseInternalEntity> listCostValue = expenseHelper.getListCostValue(costValue, actualList);
-        Integer sum = expenseHelper.sumCostValue(listCostValue);
+        List<ExpenseInternalEntity> listCostValue = helper.getListCostValue(costValue, actualList);
+        Integer sum = helper.sumCostValue(listCostValue);
 
         ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(listCostValue);
 
@@ -163,8 +91,8 @@ public class ExpensesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         List<ExpenseInternalEntity> allExpenses = accountingManager.findAll();
-        List<ExpenseInternalEntity> collectConstructionList = expenseHelper.getConstructionList(requestConstruction, allExpenses);
-        Integer sum = expenseHelper.sumCostValue(allExpenses);
+        List<ExpenseInternalEntity> collectConstructionList = helper.getConstructionList(requestConstruction, allExpenses);
+        Integer sum = helper.sumCostValue(allExpenses);
 
         ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(collectConstructionList);
 
@@ -175,8 +103,8 @@ public class ExpensesController {
     @GetMapping("/sumPaidExpenses")
     public ResponseEntity<ExpenseInfo> getSumPaidExpenses() {
         List<ExpenseInternalEntity> allExpenses = accountingManager.findAll();
-        List<ExpenseInternalEntity> paidCostList = expenseHelper.getPaidExpenses(allExpenses);
-        Integer sum = expenseHelper.sumCostValue(paidCostList);
+        List<ExpenseInternalEntity> paidCostList = helper.getPaidExpenses(allExpenses);
+        Integer sum = helper.sumCostValue(paidCostList);
 
         ExpenseResponse expenseResponseAfterMapping = expenseResponseMapper.mapToResponse(paidCostList);
 
@@ -194,7 +122,7 @@ public class ExpensesController {
                     .build();
         }
         List<ExpenseInternalEntity> expenseInternalEntities = Collections.singletonList(byName.get());
-        Integer sum = expenseHelper.sumCostValue(expenseInternalEntities);
+        Integer sum = helper.sumCostValue(expenseInternalEntities);
 
         ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(expenseInternalEntities);
         List<ExpenseResponse> expenseResponses = Collections.singletonList(expenseResponse);
@@ -205,13 +133,6 @@ public class ExpensesController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(expenseInfo);
-    }
-
-    private IncomeInfo createIncomeInfoResponse(Integer integer, IncomeResponse incomeResponse) {
-        IncomeInfo incomeInfo = new IncomeInfo();
-        incomeInfo.setIncomes(Collections.singletonList(incomeResponse));
-        incomeInfo.setSum(integer);
-        return incomeInfo;
     }
 
     private ExpenseInfo getExpenseInfo(Integer sum, ExpenseResponse expenseResponse) {

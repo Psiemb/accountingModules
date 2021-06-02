@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class ExpenseHelper {
+public class Helper {
 
     public Integer sumIncomeValue(List<Income> incomes){
         return Optional.ofNullable(incomes)

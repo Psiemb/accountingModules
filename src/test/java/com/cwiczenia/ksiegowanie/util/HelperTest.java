@@ -11,19 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-class ExpenseHelperTest {
+class HelperTest {
 
-    private ExpenseHelper expenseHelper;
+    private Helper helper;
 
     @BeforeEach
     void setUp() {
-        this.expenseHelper = new ExpenseHelper();
+        this.helper = new Helper();
     }
 
     @Test
     void sumOfInvoicesOnCostList() {
         // when
-        Integer result = expenseHelper.sumCostValue(null);
+        Integer result = helper.sumCostValue(null);
         // then
         assertEquals(0, result);
     }
@@ -34,7 +34,7 @@ class ExpenseHelperTest {
         List<ExpenseInternalEntity> expenses = Arrays.asList(null, new ExpenseInternalEntity());
 
         // when
-        Integer result = expenseHelper.sumCostValue(expenses);
+        Integer result = helper.sumCostValue(expenses);
 
         // then
         assertEquals(10, result);
@@ -46,7 +46,7 @@ class ExpenseHelperTest {
         List<ExpenseInternalEntity> expenses = Arrays.asList(new ExpenseInternalEntity().setCostValue(5), new ExpenseInternalEntity().setCostValue(10));
 
         // when
-        Integer result = expenseHelper.sumCostValue(expenses);
+        Integer result = helper.sumCostValue(expenses);
 
         // then
         assertEquals(15, result);
@@ -58,7 +58,7 @@ class ExpenseHelperTest {
         List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(-10), new ExpenseInternalEntity().setCostValue(-101010));
 
         // when
-        Integer result = expenseHelper.sumCostValue(expens);
+        Integer result = helper.sumCostValue(expens);
         // then
         assertEquals(0, result);
     }
@@ -69,7 +69,7 @@ class ExpenseHelperTest {
         List<ExpenseInternalEntity> expens = Arrays.asList(new ExpenseInternalEntity().setCostValue(-10), new ExpenseInternalEntity().setCostValue(101010));
 
         // when
-        Integer result = expenseHelper.sumCostValue(expens);
+        Integer result = helper.sumCostValue(expens);
         // then
         assertEquals(101010, result);
     }
@@ -80,7 +80,7 @@ class ExpenseHelperTest {
         List<ExpenseInternalEntity> expens = null;
 
         // when
-        Integer result = expenseHelper.sumCostValue(expens);
+        Integer result = helper.sumCostValue(expens);
         // then
         assertEquals(0, result);
     }
@@ -94,7 +94,7 @@ class ExpenseHelperTest {
 //        expenseWEWNETRZNY_model.setCostValue(0);
 
         // when
-        List<ExpenseInternalEntity> result = expenseHelper.getListCostValue(0, expens);
+        List<ExpenseInternalEntity> result = helper.getListCostValue(0, expens);
         // then
         assertTrue(result.isEmpty());
     }

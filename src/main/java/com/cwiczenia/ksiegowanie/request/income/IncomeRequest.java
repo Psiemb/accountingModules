@@ -12,6 +12,10 @@ public class IncomeRequest {
         this.receivedPayment = receivedPayment;
     }
 
+    public IncomeRequest() {
+
+    }
+
     public int getIncomeValue() {
         return incomeValue;
     }

@@ -35,25 +35,38 @@ public class ExpensesController {
     }
 
 
-    @PostMapping("/addExpense")
-    public ResponseEntity<Boolean> addExpense(@RequestBody ExpenseRequest expensesRequest) {
+    @PostMapping("/expenses")
+    public ResponseEntity<Void> addExpense(@RequestBody ExpenseRequest expensesRequest) {
         ExpenseInternalEntity expenseInternalEntity = expenseRequestMapper.mapToExpenseInternalEntity(expensesRequest);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(accountingManager.save(expenseInternalEntity));
+        if (accountingManager.save(expenseInternalEntity)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @DeleteMapping("/deleteById")
-    public ResponseEntity<Void> deleteExpense(@RequestParam Long index) {
-        accountingManager.deleteById(index);
-        return ResponseEntity.status(HttpStatus.OK)
-                .build();
+    @DeleteMapping("/expenses/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        if (accountingManager.deleteById(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .build();
     }
 
+    //    @GetMapping("/expenses/{id}")
     @GetMapping("/byId")
-    public ResponseEntity<Optional<ExpenseInternalEntity>> getById(@RequestParam RequestById requestById) {
+    public ResponseEntity<ExpenseInternalEntity> getById(@RequestParam RequestById requestById) {
         ExpenseInternalEntity expenseById = expenseRequestMapper.mapToExpenseInternalEntityBYId(requestById);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(accountingManager.findById(expenseById.getId()));
+        Optional<ExpenseInternalEntity> byId = accountingManager.findById(expenseById.getId());
+        if (!byId.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok() //ResponseEntity.status(HttpStatus.OK)
+                .body(byId.get());
+
+//        return byId.map(expenseInternalEntity -> ResponseEntity.ok() //ResponseEntity.status(HttpStatus.OK)
+//                .body(expenseInternalEntity)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 
@@ -64,12 +77,12 @@ public class ExpensesController {
 
         ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(all);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.ok()
                 .body(getExpenseInfo(sum, expenseResponse));
     }
 
     @GetMapping("/expensesByCostValue")
-    public ResponseEntity<ExpenseInfo> getExpensesByCostValue(@RequestParam(required = false) Integer costValue) {
+    public ResponseEntity<ExpenseInfo> getExpensesByCostValue(@RequestParam Integer costValue) {
         if (Objects.isNull(costValue) || costValue <= 0) {
             //throw BadRequest
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -85,7 +98,7 @@ public class ExpensesController {
     }
 
     @GetMapping("/expensesByConstructionSiteNo")
-    public ResponseEntity<ExpenseInfo> getExpensesByConstructionSiteNo(@RequestParam(required = false) String requestConstruction) {
+    public ResponseEntity<ExpenseInfo> getExpensesByConstructionSiteNo(@RequestParam String requestConstruction) {
         //TODO; nie zwracamy new Expensinfo tylko już ResponeEntity...
         if (Objects.isNull(requestConstruction)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -127,18 +140,21 @@ public class ExpensesController {
         ExpenseResponse expenseResponse = expenseResponseMapper.mapToResponse(expenseInternalEntities);
         List<ExpenseResponse> expenseResponses = Collections.singletonList(expenseResponse);
 
-        ExpenseInfo expenseInfo = new ExpenseInfo();
-        expenseInfo.setExpenseResponses(expenseResponses);
-        expenseInfo.setSumOfExpenses(sum);
+        ExpenseInfo expenseInfo = createExpenseInfoResponse(sum, expenseResponses);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(expenseInfo);
     }
 
-    private ExpenseInfo getExpenseInfo(Integer sum, ExpenseResponse expenseResponse) {
+    public ExpenseInfo createExpenseInfoResponse(Integer sum, List<ExpenseResponse> expenseResponses) {
         ExpenseInfo expenseInfo = new ExpenseInfo();
-        expenseInfo.setExpenseResponses(Collections.singletonList(expenseResponse));
+        expenseInfo.setExpenseResponses(expenseResponses);
         expenseInfo.setSumOfExpenses(sum);
+        return expenseInfo;
+    }
+
+    private ExpenseInfo getExpenseInfo(Integer sum, ExpenseResponse expenseResponse) {
+        ExpenseInfo expenseInfo = createExpenseInfoResponse(sum, Collections.singletonList(expenseResponse));
         return expenseInfo;
     }
 }

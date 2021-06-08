@@ -6,6 +6,7 @@ public class ExpenseInfo {
 
     private List<ExpenseResponse> expenseResponses;
     private int sumOfExpenses;
+    private int dddd;
 
     public List<ExpenseResponse> getExpenseResponses() {
         return expenseResponses;
@@ -21,5 +22,13 @@ public class ExpenseInfo {
 
     public void setSumOfExpenses(int sumOfExpenses) {
         this.sumOfExpenses = sumOfExpenses;
+    }
+
+    public int getDddd() {
+        return dddd;
+    }
+
+    public void setDddd(int dddd) {
+        this.dddd = dddd;
     }
 }

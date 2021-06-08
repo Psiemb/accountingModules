@@ -6,6 +6,7 @@ import com.cwiczenia.ksiegowanie.response.expense.ExpenseResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +25,17 @@ class ExpenseResponseMapperTest {
     @Test
     void returnNullWhenListEqualsNull() {
         assertNull(expenseResponseMapper.mapToResponse(null));
+    }
+
+    // testujemy metode wkladajać pista liste
+
+    @Test
+    void whenEmptyList() {
+        // when
+        ExpenseResponse result = expenseResponseMapper.mapToResponse(new ArrayList<>());
+
+        //then
+        assertNull(result);
     }
 
     @Test
@@ -51,18 +63,21 @@ class ExpenseResponseMapperTest {
     }
 
     @Test
-    void mapCostValueFromFirstElement() {
+    void test() {
         // given
         ExpenseInternalEntity item = new ExpenseInternalEntity();
         item.setCostValue(100);
 
-        List<ExpenseInternalEntity> list = Arrays.asList(item, new ExpenseInternalEntity());
+        ExpenseInternalEntity item2 = new ExpenseInternalEntity();
+        item2.setCostValue(200);
+
+        List<ExpenseInternalEntity> list = Arrays.asList(item, item2);
 
         // when
         ExpenseResponse result = expenseResponseMapper.mapToResponse(list);
 
         //then
-        assertEquals(100, result.getCostValueR());
+        assertEquals(300, result.getCostValueR());
     }
 
     @Test

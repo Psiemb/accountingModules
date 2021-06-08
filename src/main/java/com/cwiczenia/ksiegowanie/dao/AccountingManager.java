@@ -61,8 +61,8 @@ public class AccountingManager {
         return expenseWEWNETRZNYMODELList.add(expenseWEWNETRZNYMODEL);
     }
 
-    public void deleteById(Long id) {
-        expenseWEWNETRZNYMODELList.remove(id);
+    public boolean deleteById(Long id) {
+        return expenseWEWNETRZNYMODELList.remove(id);
     }
 
     @EventListener(ApplicationReadyEvent.class)
